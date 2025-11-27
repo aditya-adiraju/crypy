@@ -1,7 +1,7 @@
 from math import gcd, isqrt
 from shutil import which
 from subprocess import check_output
-from crypy.arith import iroot
+from crypy.arith import icrt, iroot
 
 __all__ = [
     'factor_cado',
@@ -72,10 +72,7 @@ def hastad(e, ciphertext_modulus_pairs):
     highly recommended to use a newer version of Sage, or the computation may take a
     long time.
     """
-    from sage.all import crt
-    values, moduli = map(list, zip(*ciphertext_modulus_pairs))
-    c = crt(values, moduli)
-    return iroot(c, e)
+    return iroot(icrt(*ciphertext_modulus_pairs)[0], e)
 
 def rsadec(c, *, n=None, e=None, d=None, p=None, q=None, phi=None):
     """Decrypt an RSA ciphertext c from common parameters.

@@ -1,11 +1,18 @@
+import pytest
 from crypy.arith import *
 
 
-def test_igcd():
-    assert igcd(0, 2) == 2
-    assert igcd(97, 100) == 1
-    assert igcd(6, 9, 12) == 3
-    assert igcd(2, 4, 6, 8) == 2
+@pytest.mark.parametrize('nums,expected', [
+    ((0, 2), 2),
+    ((97, 100), 1),
+    ((6, 9, 12), 3),
+    ((2, 4, 6, 8), 2),
+    ((-6, 9), 3),
+    ((0, 5), 5),
+    ((2**64 - 1, 2**32 - 1), 2**32 - 1),
+])
+def test_igcd(nums, expected):
+    assert igcd(*nums) == expected
 
 def test_igcdex():
     assert igcdex(2, 3) == (1, -1, 1)
@@ -24,3 +31,13 @@ def test_iroot():
     assert iroot(16, 2) == 4
     assert iroot(26, 2) == 5
     assert iroot(83, 4) == 3
+
+def test_icrt():
+    assert icrt((1, 2), (3, 4)) == (3, 4)
+    assert icrt((2, 3), (3, 5)) == (8, 15)
+    assert icrt((10, 30), (30, 50)) == (130, 150)
+
+    with pytest.raises(ValueError):
+        icrt((0, 2), (1, 4))
+    with pytest.raises(ValueError):
+        icrt((1, 4), (2, 6))

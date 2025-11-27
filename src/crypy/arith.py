@@ -3,6 +3,7 @@ from functools import reduce
 import math
 
 __all__ = [
+    'icrt',
     'igcd',
     'igcdex',
     'ilcm',
@@ -32,3 +33,19 @@ def ilcm(*a):
 def iroot(y, n):
     """Return the floor of y^(1/n)."""
     return int(_iroot(y, n)[0])
+
+def _crt2(r1, m1, r2, m2):
+    g, x, y = igcdex(m1, m2)
+    d = r2 - r1
+    if d % g != 0:
+        raise ValueError('crt has no solution')
+    m = m1 * m2 // g
+    r = r1 + x * m1 * (d // g)
+    return r % m, m
+
+def icrt(*pairs):
+    """Compute the CRT from a sequence of (residue, modulus) pairs."""
+    from sage.all import crt, lcm
+
+    values, moduli = map(list, zip(*pairs))
+    return int(crt(values, moduli)), int(lcm(moduli))
