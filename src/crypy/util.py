@@ -9,6 +9,7 @@ __all__ = [
     'b64e',
     'b64ud',
     'b64ue',
+    'bn2i',
     'brev',
     'ci',
     'ci8',
@@ -21,6 +22,7 @@ __all__ = [
     'cu32',
     'cu64',
     'i2b',
+    'i2bn',
     'pad',
     'rol',
     'rol8',
@@ -180,6 +182,33 @@ def b64ud(s):
     if isinstance(s, str):
         s = s.encode()
     return base64.urlsafe_b64decode(s + b'==')
+
+def i2bn(x, n):
+    """Encode `x` in base `n` (represented as a list of base 10 ints).
+
+    >>> i2bn(b2i(b"ABC"), 256)
+    [65, 66, 67]
+    """
+    res = []
+    while x > 0:
+        res.append(x % n)
+        x //= n
+    if len(res) == 0: res = [0]
+
+    return res[::-1]
+
+def bn2i(data, n):
+    """Decode a list `data` encoded in base `n`.
+
+    >>> bn2i([1, 0, 2], 3)
+    11
+    >>> bn2i([65, 66, 67], 256) == b2i(b"ABC")
+    True
+    """
+    res = 0 
+    for x in data:
+        res = n*res + x
+    return res
 
 def xor(*args):
     """XOR multiple string or byte inputs, truncated to the length of the shortest string.
